@@ -4,6 +4,7 @@
   "description": "It Makes Use of Bitly's API and Shorten URL's",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "veeranjaneya reddy",
