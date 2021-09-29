@@ -18,10 +18,9 @@ app.get('/', (req, res) => {
 })
 
 app.post('/shorten', async (req, res) => {
-    const url = req.body.long_url;
-    const token = '4c6e039b4d2997fd42d972d39715b945180f2369';
+    const token = 'efc4bec11bcabbb0d361c0966d2f2f9b362c8b1b';
 
-
+    // get group id
     var getGroupId = (() => {
         var _groupId = null;
         return async () => {
@@ -31,18 +30,28 @@ app.post('/shorten', async (req, res) => {
                         'Authorization': `Bearer ${token}`
                     }
                 })
-                console.log(response);
+                _groupId = response.data.groups[0].guid;
             }
             return _groupId;
         }
-    });
-    await getGroupId();
-    // var response = await axios.get('https://api-ssl.bitly.com/v4/groups?organization_guid=Oa1bcd234eF')
-    // console.log(response.groups.guid)
+    })();
     
-    // let shortUrl = await axios.get("https://api-ssl.bitly.com/v4/shorten")
-    // return shortUrl;
-    res.status(200).send('a');
+    // get shorten url
+    var group_guid = await getGroupId();
+    var postData = {
+      long_url: req.body.url,
+       group_guid: group_guid
+    };
+    
+    var response = await axios.post('https://api-ssl.bitly.com/v4/shorten', postData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    res.status(200).send({
+      shorten_url: response.data.link
+    });
 })
 
 app.listen('8081', () => console.log('server started'))
